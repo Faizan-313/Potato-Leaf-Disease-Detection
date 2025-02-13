@@ -30,8 +30,6 @@ def model_prediction(test_image,confidence_threshold=0.4, margin_threshold=0.1):
     second_max_confidence = sorted_confidences[-2] if len(sorted_confidences) > 1 else 0
     margin = confidence - second_max_confidence
 
-    st.write("Confidence:", confidence)
-
     if confidence < confidence_threshold or margin < margin_threshold:
         return None, confidence  # Image might not be a potato leaf
     else:
@@ -90,9 +88,7 @@ elif st.session_state.page == "Disease Recognition":
                 st.error("The uploaded image doesn't appear to be a valid potato leaf. Please try another image.")
             else:
                 disease_name = class_labels.get(predicted_class, "Unknown Disease")
-                st.success(f"✅ Prediction: **{disease_name}** (Confidence: {confidence:.2f})")
-
+                st.success(f"✅ Prediction: **{disease_name}**   (Confidence: {confidence:.2f})")
 
             analyzing_text.empty()
             
-            st.success(f"✅ Prediction: **{disease_name}**")
