@@ -3,19 +3,31 @@ import tensorflow as tf
 import numpy as np
 import gdown 
 import os
+from tqdm import tqdm
 
-url = "https://drive.google.com/uc?id=1Cuo6gXgG3fLoIO3S4Rr1a56PYiFSaKOX"
-model_path = "trained_plant_disease_model.keras"
+def download_file_with_progress(url, output_path):
+    response = requests.get(url, stream=True)
+    total_size = int(response.headers.get("content-length", 0))
+    
+    if total_size == 0:
+        st.error("Failed to fetch file size. Download may not work correctly.")
 
-# Download model if it doesn't exist
+    # Create a progress bar in Streamlit
+    progress_bar = st.progress(0)
+    downloaded_size = 0
+    
+    with open(output_path, "wb") as file:
+        for data in tqdm(response.iter_content(1024), total=total_size // 1024, unit="KB"):
+            file.write(data)
+            downloaded_size += len(data)
+            progress_bar.progress(min(downloaded_size / total_size, 1.0))  # Update progress bar
+
+    st.success("✅ Model Downloaded Successfully!")
+
+# Check if model exists, otherwise download it
 if not os.path.exists(model_path):
     st.warning("Downloading Model from Google Drive... Please wait.")
-    gdown.download(url, model_path, quiet=False, use_cookies=False)
-
-# Load the model once and cache it
-@st.cache_resource
-def load_model():
-    return tf.keras.models.load_model(model_path)
+    download_file_with_progress(download_url, model_path)
 
 model = load_model()
 
