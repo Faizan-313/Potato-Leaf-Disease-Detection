@@ -3,39 +3,10 @@ import tensorflow as tf
 import numpy as np
 import gdown 
 import os
-from tqdm import tqdm
-
-file_id = "1Cuo6gXgG3fLoIO3S4Rr1a56PYiFSaKOX"
-model_path = "trained_plant_disease_model.keras"
-download_url = f"https://drive.google.com/uc?export=download&id={file_id}"
-
-def download_file_with_progress(url, output_path):
-    response = requests.get(url, stream=True)
-    total_size = int(response.headers.get("content-length", 0))
-    
-    if total_size == 0:
-        st.error("Failed to fetch file size. Download may not work correctly.")
-
-    # Create a progress bar in Streamlit
-    progress_bar = st.progress(0)
-    downloaded_size = 0
-    
-    with open(output_path, "wb") as file:
-        for data in tqdm(response.iter_content(1024), total=total_size // 1024, unit="KB"):
-            file.write(data)
-            downloaded_size += len(data)
-            progress_bar.progress(min(downloaded_size / total_size, 1.0))  # Update progress bar
-
-    st.success("✅ Model Downloaded Successfully!")
-
-# Check if model exists, otherwise download it
-if not os.path.exists(model_path):
-    st.warning("Downloading Model from Google Drive... Please wait.")
-    download_file_with_progress(download_url, model_path)
-
-model = load_model()
 
 def model_prediction(test_image):
+    model = tf.keras.models.load_model("trained_plant_disease_model.keras")
+    
     image = tf.keras.preprocessing.image.load_img(test_image, target_size=(128, 128)) 
     input_arr = tf.keras.preprocessing.image.img_to_array(image) 
     input_arr = np.array([input_arr])
