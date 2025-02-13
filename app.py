@@ -14,7 +14,7 @@ if not os.path.exists(model_path):
 
 model_path = "trained_plant_disease_model.keras"
 
-def model_prediction(test_image,confidence_threshold=0.25, margin_threshold=0.1):
+def model_prediction(test_image,confidence_threshold=0.25, margin_threshold=0.05):
     model = tf.keras.models.load_model(model_path)
     
     image = tf.keras.preprocessing.image.load_img(test_image, target_size=(128, 128)) 
@@ -26,9 +26,13 @@ def model_prediction(test_image,confidence_threshold=0.25, margin_threshold=0.1)
     predicted_class = np.argmax(predictions)
 
     # Calculate the margin between the highest and second highest probabilities
-    sorted_confidences = np.sort(predictions[0])
+      sorted_confidences = np.sort(predictions[0])
     second_max_confidence = sorted_confidences[-2] if len(sorted_confidences) > 1 else 0
     margin = confidence - second_max_confidence
+
+    st.write("Predictions:", predictions)
+    st.write("Confidence:", confidence)
+    st.write("Margin:", margin)
 
     if confidence < confidence_threshold or margin < margin_threshold:
         return None, confidence  # Image might not be a potato leaf
