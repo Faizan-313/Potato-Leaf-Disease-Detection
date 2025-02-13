@@ -4,7 +4,7 @@ import numpy as np
 import gdown 
 import os
 
-url = "https://drive.google.com/file/d/1Cuo6gXgG3fLoIO3S4Rr1a56PYiFSaKOX/view?usp=sharing"
+url = "https://drive.google.com/file/d/1Cuo6gXgG3fLoIO3S4Rr1a56PYiFSaKOX"
 model_path = "trained_plant_disease_model.keras"
 
 if not os.path.exists(model_path):
