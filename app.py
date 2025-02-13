@@ -9,6 +9,7 @@ model_path = "trained_plant_disease_model.keras"
 
 if not os.path.exists(model_path):
     st.warning("Downloading Model from Google Drive...")
+    st.warning("Wait")
     gdown.download(url,model_path,quiet=False)
 
 def load_model():
