@@ -14,7 +14,7 @@ if not os.path.exists(model_path):
 
 model_path = "trained_plant_disease_model.keras"
 
-def model_prediction(test_image,confidence_threshold=0.4, margin_threshold=0.1):
+def model_prediction(test_image):
     model = tf.keras.models.load_model(model_path)
     
     image = tf.keras.preprocessing.image.load_img(test_image, target_size=(128, 128)) 
@@ -22,18 +22,7 @@ def model_prediction(test_image,confidence_threshold=0.4, margin_threshold=0.1):
     input_arr = np.array([input_arr])
     
     predictions = model.predict(input_arr)
-    confidence = np.max(predictions)
-    predicted_class = np.argmax(predictions)
-
-    # Calculate the margin between the highest and second highest probabilities
-    sorted_confidences = np.sort(predictions[0])
-    second_max_confidence = sorted_confidences[-2] if len(sorted_confidences) > 1 else 0
-    margin = confidence - second_max_confidence
-
-    if confidence < confidence_threshold or margin < margin_threshold:
-        return None, confidence  # Image might not be a potato leaf
-    else:
-        return predicted_class, confidence
+    return np.argmax(predictions)
 
 class_labels = {
     0: "Potato__Early_Blight",
@@ -83,12 +72,9 @@ elif st.session_state.page == "Disease Recognition":
             analyzing_text = st.empty()
             analyzing_text.write("🕵️ Analyzing...")
 
-            predicted_class, confidence = model_prediction(uploaded_image)
-            if predicted_class is None:
-                st.error("The uploaded image doesn't appear to be a valid potato leaf. Please try another image.")
-            else:
-                disease_name = class_labels.get(predicted_class, "Unknown Disease")
-                st.success(f"✅ Prediction: **{disease_name}**   (Confidence: {confidence:.2f})")
+            predicted_class = model_prediction(uploaded_image)
+            disease_name = class_labels.get(predicted_class, "Unknown Disease")
 
             analyzing_text.empty()
+            st.success(f"✅ Prediction: **{disease_name}**")
             
