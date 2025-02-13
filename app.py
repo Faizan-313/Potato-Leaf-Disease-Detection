@@ -13,7 +13,7 @@ if not os.path.exists(model_path):
     st.success("✅ Model downloaded successfully!")
 
 model_path = "trained_plant_disease_model.keras"
-def model_prediction(test_image,threshold=0.6):
+def model_prediction(test_image,confidence_threshold=0.4, margin_threshold=0.1):
     model = tf.keras.models.load_model(model_path)
     
     image = tf.keras.preprocessing.image.load_img(test_image, target_size=(128, 128)) 
@@ -24,11 +24,15 @@ def model_prediction(test_image,threshold=0.6):
     confidence = np.max(predictions)
     predicted_class = np.argmax(predictions)
     
-    if confidence < threshold:
-        return None, confidence 
-    return predicted_class, confidence
+    # Calculate the margin between the highest and second highest probabilities
+    sorted_confidences = np.sort(predictions[0])
+    second_max_confidence = sorted_confidences[-2]
+    margin = max_confidence - second_max_confidence
     
-    return np.argmax(predictions)
+    if max_confidence < confidence_threshold or margin < margin_threshold:
+        return None, max_confidence 
+    else:
+        return predicted_class, max_confidence
 
 class_labels = {
     0: "Potato__Early_Blight",
