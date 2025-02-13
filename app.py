@@ -4,20 +4,22 @@ import numpy as np
 import gdown 
 import os
 
-url = "https://drive.google.com/file/d/1Cuo6gXgG3fLoIO3S4Rr1a56PYiFSaKOX"
+url = "https://drive.google.com/uc?id=1Cuo6gXgG3fLoIO3S4Rr1a56PYiFSaKOX"
 model_path = "trained_plant_disease_model.keras"
 
+# Download model if it doesn't exist
 if not os.path.exists(model_path):
-    st.warning("Downloading Model from Google Drive...")
-    st.warning("Wait")
-    gdown.download(url,model_path,quiet=False)
+    st.warning("Downloading Model from Google Drive... Please wait.")
+    gdown.download(url, model_path, quiet=False, use_cookies=False)
 
+# Load the model once and cache it
+@st.cache_resource
 def load_model():
     return tf.keras.models.load_model(model_path)
 
-def model_prediction(test_image):
-    model = load_model()
+model = load_model()
 
+def model_prediction(test_image):
     image = tf.keras.preprocessing.image.load_img(test_image, target_size=(128, 128)) 
     input_arr = tf.keras.preprocessing.image.img_to_array(image) 
     input_arr = np.array([input_arr])
