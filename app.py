@@ -8,17 +8,26 @@ url = "https://drive.google.com/uc?id=1Cuo6gXgG3fLoIO3S4Rr1a56PYiFSaKOX"
 model_path = "trained_plant_disease_model.keras"
 
 if not os.path.exists(model_path):
-    st.warning("Downloading Model from Google Drive...")
-    gdown.download(url,model_path,quiet=False)
+    with st.status("Downloading Model from Google Drive..."):
+        gdown.download(url, model_path, quiet=False)
+    st.success("✅ Model downloaded successfully!")
 
 model_path = "trained_plant_disease_model.keras"
-def model_prediction(test_image):
+def model_prediction(test_image,threshold=0.6):
     model = tf.keras.models.load_model(model_path)
     
     image = tf.keras.preprocessing.image.load_img(test_image, target_size=(128, 128)) 
     input_arr = tf.keras.preprocessing.image.img_to_array(image) 
     input_arr = np.array([input_arr])
+    
     predictions = model.predict(input_arr)
+    confidence = np.max(predictions)
+    predicted_class = np.argmax(predictions)
+    
+    if confidence < threshold:
+        return None, confidence 
+    return predicted_class, confidence
+    
     return np.argmax(predictions)
 
 class_labels = {
