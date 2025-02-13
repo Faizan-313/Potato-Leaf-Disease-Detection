@@ -26,7 +26,7 @@ def model_prediction(test_image,confidence_threshold=0.25, margin_threshold=0.05
     predicted_class = np.argmax(predictions)
 
     # Calculate the margin between the highest and second highest probabilities
-      sorted_confidences = np.sort(predictions[0])
+    sorted_confidences = np.sort(predictions[0])
     second_max_confidence = sorted_confidences[-2] if len(sorted_confidences) > 1 else 0
     margin = confidence - second_max_confidence
 
