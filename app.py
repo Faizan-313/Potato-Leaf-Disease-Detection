@@ -14,7 +14,7 @@ if not os.path.exists(model_path):
 
 model_path = "trained_plant_disease_model.keras"
 
-def model_prediction(test_image,confidence_threshold=0.4, margin_threshold=0.1):
+def model_prediction(test_image,confidence_threshold=0.25, margin_threshold=0.1):
     model = tf.keras.models.load_model(model_path)
     
     image = tf.keras.preprocessing.image.load_img(test_image, target_size=(128, 128)) 
