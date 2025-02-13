@@ -21,7 +21,7 @@ def model_prediction(test_image,confidence_threshold=0.4, margin_threshold=0.1):
     input_arr = tf.keras.preprocessing.image.img_to_array(image) 
     input_arr = np.array([input_arr])
     
-     predictions = model.predict(input_arr)
+    predictions = model.predict(input_arr)
     confidence = np.max(predictions)
     predicted_class = np.argmax(predictions)
 
