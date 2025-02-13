@@ -11,8 +11,11 @@ if not os.path.exists(model_path):
     st.warning("Downloading Model from Google Drive...")
     gdown.download(url,model_path,quiet=False)
 
+def load_model():
+    return tf.keras.models.load_model(model_path)
+
 def model_prediction(test_image):
-    model = tf.keras.models.load_model(model_path)
+    model = load_model()
 
     image = tf.keras.preprocessing.image.load_img(test_image, target_size=(128, 128)) 
     input_arr = tf.keras.preprocessing.image.img_to_array(image) 
