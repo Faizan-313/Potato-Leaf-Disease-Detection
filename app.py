@@ -5,6 +5,10 @@ import gdown
 import os
 from tqdm import tqdm
 
+file_id = "1Cuo6gXgG3fLoIO3S4Rr1a56PYiFSaKOX"
+model_path = "trained_plant_disease_model.keras"
+download_url = f"https://drive.google.com/uc?export=download&id={file_id}"
+
 def download_file_with_progress(url, output_path):
     response = requests.get(url, stream=True)
     total_size = int(response.headers.get("content-length", 0))
